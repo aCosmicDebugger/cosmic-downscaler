@@ -4,7 +4,11 @@ version = "0.1.0"
 description = "Regional atmosferic downscaling framework using ERA6 and BRAMS data."
 readme = "README.md"
 requires-python = ">=3.11,<3.12"
-dependencies = []
+dependencies = [
+    "pip>=26.2.1",
+    "pytest>=9.1.1",
+    "ruff>=0.16.9",
+]
 
 [build-system]
 requires = ["hatchling"]
