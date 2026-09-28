@@ -1,0 +1,17 @@
+[project]
+name = "cosmic-downscaler"
+version = "0.1.0"
+description = "Regional atmosferic downscaling framework using ERA6 and BRAMS data."
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = []
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cosmic_downscaler"]
