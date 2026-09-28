@@ -17,19 +17,22 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "pip" },
+]
+
+[package.dev-dependencies]
+dev = [
     { name = "pytest" },
     { name = "ruff" },
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "pip", specifier = ">=26.2.1" },
+requires-dist = [{ name = "pip", specifier = ">=26.2.1" }]
+
+[package.metadata.requires-dev]
+dev = [
     { name = "pytest", specifier = ">=9.1.1" },
     { name = "ruff", specifier = ">=0.16.9" },
 ]
-
-[package.metadata.requires-dev]
-dev = []
 
 [[package]]
 name = "iniconfig"
