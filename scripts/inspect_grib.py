@@ -2,6 +2,7 @@ from collections import Counter
 from pathlib import Path
 
 from eccodes import (
+    KeyValueNotFoundError,
     codes_get,
     codes_grib_new_from_file,
     codes_release,
@@ -49,8 +50,7 @@ GRID_KEYS = [
 def read_key(message, key):
     try:
         return codes_get(message, key)
-    except Exception:
-        # Some keys are unavailable for particular GRIB templates.
+    except KeyValueNotFoundError:
         return None
 
 
