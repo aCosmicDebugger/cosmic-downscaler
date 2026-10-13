@@ -1,0 +1,256 @@
+{
+  "schema_version": 1,
+  "channels": {
+    "t2m": "K",
+    "d2m": "K",
+    "u10": "m/s",
+    "v10": "m/s",
+    "msl": "Pa"
+  },
+  "pairing_policy": "same initialization, lead and valid time",
+  "grid_id_definition": "SHA256 of named float64 coordinate arrays",
+  "availability": "publication timestamps not yet recorded",
+  "n_pairs": 6,
+  "samples": [
+    {
+      "sample_id": "2026010106",
+      "valid_time_utc": "2026-01-01T06:00:00+00:00",
+      "gfs": {
+        "path": "data/interim/gfs/gfs_ne_2026010106.nc",
+        "source": "NCEP GFS",
+        "source_file": "gfs.0p25.2026010100.f006.grib2",
+        "initialization_time_utc": "2026-01-01T00:00:00+00:00",
+        "lead_hours": 6,
+        "grid_id": "f8ee2e31ec8a31e4549194fadb37b601ff18caaa250dc2f18b5098ff196371b6",
+        "grid_shape": [
+          81,
+          65
+        ],
+        "bounds": {
+          "south": -19.0,
+          "north": 1.0,
+          "west": -49.0,
+          "east": -33.0
+        }
+      },
+      "brams": {
+        "path": "data/interim/brams/brams_ne_2026010106.nc",
+        "source": "CPTEC/INPE BRAMS",
+        "source_file": "BRAMS_ams_08km_2026010100_2026010106.grib2",
+        "initialization_time_utc": "2026-01-01T00:00:00+00:00",
+        "lead_hours": 6,
+        "grid_id": "683d023c3de58ccfacde93074b503954c97880d497186be8c9c5f2630af381bc",
+        "grid_shape": [
+          300,
+          212
+        ],
+        "bounds": {
+          "south": -18.9932700000002,
+          "north": 0.9909929999997088,
+          "west": -48.94369447286158,
+          "east": -33.01950071645916
+        }
+      }
+    },
+    {
+      "sample_id": "2026010118",
+      "valid_time_utc": "2026-01-01T18:00:00+00:00",
+      "gfs": {
+        "path": "data/interim/gfs/gfs_ne_2026010118.nc",
+        "source": "NCEP GFS",
+        "source_file": "gfs.0p25.2026010112.f006.grib2",
+        "initialization_time_utc": "2026-01-01T12:00:00+00:00",
+        "lead_hours": 6,
+        "grid_id": "f8ee2e31ec8a31e4549194fadb37b601ff18caaa250dc2f18b5098ff196371b6",
+        "grid_shape": [
+          81,
+          65
+        ],
+        "bounds": {
+          "south": -19.0,
+          "north": 1.0,
+          "west": -49.0,
+          "east": -33.0
+        }
+      },
+      "brams": {
+        "path": "data/interim/brams/brams_ne_2026010118.nc",
+        "source": "CPTEC/INPE BRAMS",
+        "source_file": "BRAMS_ams_08km_2026010112_2026010118.grib2",
+        "initialization_time_utc": "2026-01-01T12:00:00+00:00",
+        "lead_hours": 6,
+        "grid_id": "683d023c3de58ccfacde93074b503954c97880d497186be8c9c5f2630af381bc",
+        "grid_shape": [
+          300,
+          212
+        ],
+        "bounds": {
+          "south": -18.9932700000002,
+          "north": 0.9909929999997088,
+          "west": -48.94369447286158,
+          "east": -33.01950071645916
+        }
+      }
+    },
+    {
+      "sample_id": "2026010206",
+      "valid_time_utc": "2026-01-02T06:00:00+00:00",
+      "gfs": {
+        "path": "data/interim/gfs/gfs_ne_2026010206.nc",
+        "source": "NCEP GFS",
+        "source_file": "gfs.0p25.2026010200.f006.grib2",
+        "initialization_time_utc": "2026-01-02T00:00:00+00:00",
+        "lead_hours": 6,
+        "grid_id": "f8ee2e31ec8a31e4549194fadb37b601ff18caaa250dc2f18b5098ff196371b6",
+        "grid_shape": [
+          81,
+          65
+        ],
+        "bounds": {
+          "south": -19.0,
+          "north": 1.0,
+          "west": -49.0,
+          "east": -33.0
+        }
+      },
+      "brams": {
+        "path": "data/interim/brams/brams_ne_2026010206.nc",
+        "source": "CPTEC/INPE BRAMS",
+        "source_file": "BRAMS_ams_08km_2026010200_2026010206.grib2",
+        "initialization_time_utc": "2026-01-02T00:00:00+00:00",
+        "lead_hours": 6,
+        "grid_id": "683d023c3de58ccfacde93074b503954c97880d497186be8c9c5f2630af381bc",
+        "grid_shape": [
+          300,
+          212
+        ],
+        "bounds": {
+          "south": -18.9932700000002,
+          "north": 0.9909929999997088,
+          "west": -48.94369447286158,
+          "east": -33.01950071645916
+        }
+      }
+    },
+    {
+      "sample_id": "2026010218",
+      "valid_time_utc": "2026-01-02T18:00:00+00:00",
+      "gfs": {
+        "path": "data/interim/gfs/gfs_ne_2026010218.nc",
+        "source": "NCEP GFS",
+        "source_file": "gfs.0p25.2026010212.f006.grib2",
+        "initialization_time_utc": "2026-01-02T12:00:00+00:00",
+        "lead_hours": 6,
+        "grid_id": "f8ee2e31ec8a31e4549194fadb37b601ff18caaa250dc2f18b5098ff196371b6",
+        "grid_shape": [
+          81,
+          65
+        ],
+        "bounds": {
+          "south": -19.0,
+          "north": 1.0,
+          "west": -49.0,
+          "east": -33.0
+        }
+      },
+      "brams": {
+        "path": "data/interim/brams/brams_ne_2026010218.nc",
+        "source": "CPTEC/INPE BRAMS",
+        "source_file": "BRAMS_ams_08km_2026010212_2026010218.grib2",
+        "initialization_time_utc": "2026-01-02T12:00:00+00:00",
+        "lead_hours": 6,
+        "grid_id": "683d023c3de58ccfacde93074b503954c97880d497186be8c9c5f2630af381bc",
+        "grid_shape": [
+          300,
+          212
+        ],
+        "bounds": {
+          "south": -18.9932700000002,
+          "north": 0.9909929999997088,
+          "west": -48.94369447286158,
+          "east": -33.01950071645916
+        }
+      }
+    },
+    {
+      "sample_id": "2026010306",
+      "valid_time_utc": "2026-01-03T06:00:00+00:00",
+      "gfs": {
+        "path": "data/interim/gfs/gfs_ne_2026010306.nc",
+        "source": "NCEP GFS",
+        "source_file": "gfs.0p25.2026010300.f006.grib2",
+        "initialization_time_utc": "2026-01-03T00:00:00+00:00",
+        "lead_hours": 6,
+        "grid_id": "f8ee2e31ec8a31e4549194fadb37b601ff18caaa250dc2f18b5098ff196371b6",
+        "grid_shape": [
+          81,
+          65
+        ],
+        "bounds": {
+          "south": -19.0,
+          "north": 1.0,
+          "west": -49.0,
+          "east": -33.0
+        }
+      },
+      "brams": {
+        "path": "data/interim/brams/brams_ne_2026010306.nc",
+        "source": "CPTEC/INPE BRAMS",
+        "source_file": "BRAMS_ams_08km_2026010300_2026010306.grib2",
+        "initialization_time_utc": "2026-01-03T00:00:00+00:00",
+        "lead_hours": 6,
+        "grid_id": "683d023c3de58ccfacde93074b503954c97880d497186be8c9c5f2630af381bc",
+        "grid_shape": [
+          300,
+          212
+        ],
+        "bounds": {
+          "south": -18.9932700000002,
+          "north": 0.9909929999997088,
+          "west": -48.94369447286158,
+          "east": -33.01950071645916
+        }
+      }
+    },
+    {
+      "sample_id": "2026010318",
+      "valid_time_utc": "2026-01-03T18:00:00+00:00",
+      "gfs": {
+        "path": "data/interim/gfs/gfs_ne_2026010318.nc",
+        "source": "NCEP GFS",
+        "source_file": "gfs.0p25.2026010312.f006.grib2",
+        "initialization_time_utc": "2026-01-03T12:00:00+00:00",
+        "lead_hours": 6,
+        "grid_id": "f8ee2e31ec8a31e4549194fadb37b601ff18caaa250dc2f18b5098ff196371b6",
+        "grid_shape": [
+          81,
+          65
+        ],
+        "bounds": {
+          "south": -19.0,
+          "north": 1.0,
+          "west": -49.0,
+          "east": -33.0
+        }
+      },
+      "brams": {
+        "path": "data/interim/brams/brams_ne_2026010318.nc",
+        "source": "CPTEC/INPE BRAMS",
+        "source_file": "BRAMS_ams_08km_2026010312_2026010318.grib2",
+        "initialization_time_utc": "2026-01-03T12:00:00+00:00",
+        "lead_hours": 6,
+        "grid_id": "683d023c3de58ccfacde93074b503954c97880d497186be8c9c5f2630af381bc",
+        "grid_shape": [
+          300,
+          212
+        ],
+        "bounds": {
+          "south": -18.9932700000002,
+          "north": 0.9909929999997088,
+          "west": -48.94369447286158,
+          "east": -33.01950071645916
+        }
+      }
+    }
+  ]
+}
