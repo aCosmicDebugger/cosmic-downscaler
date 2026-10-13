@@ -10,6 +10,8 @@ from eccodes import (
     codes_release,
 )
 
+from cosmic_downscaler.preprocessing.grid import build_regional_field
+
 INPUT = Path("data/raw/gfs/gfs.0p25.2026010100.f006.grib2")
 OUTPUT = Path("data/interim/gfs/gfs_ne_2026010106.nc")
 FIELDS = {
@@ -22,41 +24,18 @@ FIELDS = {
 
 
 def extract_field(message):
-    """Reconstruct a regular grid using each point's coordinates."""
     if codes_get(message, "gridType") != "regular_ll":
         raise ValueError("Expected a regular latitude-longitude grid")
 
-    lat = codes_get_array(message, "latitudes")
-    lon = codes_get_array(message, "longitudes")
-    lon = (lon + 180) % 360 - 180
-    values = codes_get_array(message, "values").astype(float)
-
+    bitmap = None
     if codes_get(message, "bitmapPresent"):
         bitmap = codes_get_array(message, "bitmap")
-        values[bitmap == 0] = np.nan
 
-    latitudes = np.unique(lat)
-    longitudes = np.unique(lon)
-    order = np.lexsort((lon, lat))
-
-    expected_lat = np.repeat(latitudes, longitudes.size)
-    expected_lon = np.tile(longitudes, latitudes.size)
-
-    if not (
-        np.array_equal(lat[order], expected_lat)
-        and np.array_equal(lon[order], expected_lon)
-    ):
-        raise ValueError("Coordinates do not form a complete regular grid")
-
-    field = xr.DataArray(
-        values[order].reshape(latitudes.size, longitudes.size),
-        dims=("latitude", "longitude"),
-        coords={"latitude": latitudes, "longitude": longitudes},
-    )
-
-    return field.sel(
-        latitude=slice(-19, 1),
-        longitude=slice(-49, -33),
+    return build_regional_field(
+        codes_get_array(message, "latitudes"),
+        codes_get_array(message, "longitudes"),
+        codes_get_array(message, "values"),
+        bitmap=bitmap,
     )
 
 
