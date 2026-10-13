@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "method": "linear interpolation along latitude and longitude",
+  "difference": "GFS minus BRAMS",
+  "weighting": "cos(latitude)",
+  "domain": "full rectangular crop, including ocean",
+  "reference_kind": "BRAMS numerical model output",
+  "gfs_file": "data/interim/gfs/gfs_ne_2026010218.nc",
+  "brams_file": "data/interim/brams/brams_ne_2026010218.nc",
+  "valid_time_utc": "2026-01-02T18:00:00",
+  "source_metadata": {
+    "initialization_date": 20260102,
+    "initialization_time": 1200,
+    "source_end_step": 6,
+    "source_step_units_code": 1
+  },
+  "metrics": {
+    "t2m": {
+      "mae": 1.8075307257714712,
+      "rmse": 2.7692573244494394,
+      "bias": -0.07767102731257092,
+      "units": "K",
+      "n_cells": 63600
+    },
+    "d2m": {
+      "mae": 1.9503350881092998,
+      "rmse": 2.4883009004827263,
+      "bias": -1.5581978531200698,
+      "units": "K",
+      "n_cells": 63600
+    },
+    "u10": {
+      "mae": 1.476372686401989,
+      "rmse": 1.9558039916090824,
+      "bias": 0.5212688931582173,
+      "units": "m/s",
+      "n_cells": 63600
+    },
+    "v10": {
+      "mae": 1.4116391399757533,
+      "rmse": 1.85342790728598,
+      "bias": 0.7817229108116704,
+      "units": "m/s",
+      "n_cells": 63600
+    },
+    "msl": {
+      "mae": 64.14988391032895,
+      "rmse": 87.48698047342293,
+      "bias": 7.4905479119764475,
+      "units": "Pa",
+      "n_cells": 63600
+    }
+  }
+}
