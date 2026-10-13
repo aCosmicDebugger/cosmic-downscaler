@@ -33,6 +33,11 @@ def main():
     )
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--run-dir", type=Path, required=True)
+    parser.add_argument(
+        "--method",
+        choices=["linear", "nearest"],
+        default="linear",
+    )
     args = parser.parse_args()
 
     manifest_path = project_path(args.manifest)
@@ -60,7 +65,6 @@ def main():
             if not path.is_file():
                 raise FileNotFoundError(path)
 
-    # Require a new directory so previous results cannot be mixed in.
     run_dir.mkdir(parents=True, exist_ok=False)
     datasets_dir = run_dir / "datasets"
     metrics_dir = run_dir / "metrics"
@@ -87,9 +91,11 @@ def main():
                 "--brams",
                 str(project_path(sample["brams"]["path"])),
                 "--output",
-                str(datasets_dir / f"gfs_linear_{sample_id}.nc"),
+                str(datasets_dir / f"gfs_{args.method}_{sample_id}.nc"),
                 "--metrics",
-                str(metrics_dir / f"gfs_linear_{sample_id}.json"),
+                str(metrics_dir / f"gfs_{args.method}_{sample_id}.json"),
+                "--method",
+                args.method,
             ],
         )
 

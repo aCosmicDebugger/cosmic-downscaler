@@ -50,8 +50,14 @@ def main():
 
     if args.output.exists():
         raise FileExistsError(args.output)
+    
+    files = sorted(
+    [
+        *args.input_dir.glob("gfs_linear_*.json"),
+        *args.input_dir.glob("gfs_nearest_*.json"),
+    ]
+    )
 
-    files = sorted(args.input_dir.glob("gfs_linear_*.json"))
     if not files:
         raise FileNotFoundError("No baseline metric files found")
     if args.output.resolve() in {path.resolve() for path in files}:

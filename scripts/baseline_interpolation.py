@@ -12,10 +12,16 @@ def main():
     parser = argparse.ArgumentParser(
         description="Interpolate GFS onto BRAMS and evaluate differences"
     )
+    
     parser.add_argument("--gfs", type=Path, required=True)
     parser.add_argument("--brams", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--metrics", type=Path, required=True)
+    parser.add_argument(
+        "--method",
+        choices=["linear", "nearest"],
+        default="linear",
+    )
     args = parser.parse_args()
 
     paths = [args.gfs, args.brams, args.output, args.metrics]
@@ -59,7 +65,7 @@ def main():
     interpolated = gfs.interp(
         latitude=brams.latitude,
         longitude=brams.longitude,
-        method="linear",
+        method=args.method,
     )
     interpolated, brams = xr.align(
         interpolated, brams, join="exact"
@@ -102,7 +108,7 @@ def main():
 
     report = {
         "schema_version": 1,
-        "method": "linear interpolation along latitude and longitude",
+        "method": f"{args.method} interpolation along latitude and longitude",
         "difference": "GFS minus BRAMS",
         "weighting": "cos(latitude)",
         "domain": "full rectangular crop, including ocean",
@@ -122,7 +128,7 @@ def main():
     interpolated.attrs.pop("grid_spacing_degrees", None)
     interpolated.attrs.update(
         {
-            "interpolation_method": "linear along latitude and longitude",
+            "interpolation_method": f"{args.method} interpolation along latitude and longitude",
             "target_grid_source": args.brams.name,
             "verification_reference": "BRAMS numerical model output",
         }
