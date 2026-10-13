@@ -5,7 +5,12 @@ description = "Regional atmosferic downscaling framework using ERA6 and BRAMS da
 readme = "README.md"
 requires-python = ">=3.11,<3.12"
 dependencies = [
+    "eccodes>=2.49.0",
+    "eccodeslib>=2.49.0.30",
+    "numpy>=2.4.6",
     "pip>=26.2.1",
+    "scipy>=1.17.1",
+    "xarray>=2026.9.0",
 ]
 
 [build-system]
