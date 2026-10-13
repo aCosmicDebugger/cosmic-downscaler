@@ -1,3 +1,4 @@
+import argparse
 from collections import Counter
 from pathlib import Path
 
@@ -55,17 +56,29 @@ def read_key(message, key):
 
 
 def main():
+
+    parser = argparse.ArgumentParser(description="Inspect a GRIB file")
+    parser.add_argument(
+        "path",
+        nargs="?",
+        type=Path,
+        default=GRIB_PATH,
+        )
+        
+    args = parser.parse_args()
+    grib_path = args.path
+
     if not GRIB_PATH.is_file():
-        raise FileNotFoundError(GRIB_PATH)
+        raise FileNotFoundError(grib_path)
 
     fields = Counter()
     surface_candidates = []
     grid_signatures = Counter()
 
-    print(f"File: {GRIB_PATH}")
-    print(f"Size: {GRIB_PATH.stat().st_size / 1024**2:.1f} MiB")
+    print(f"File: {grib_path}")
+    print(f"Size: {grib_path.stat().st_size / 1024**2:.1f} MiB")
 
-    with GRIB_PATH.open("rb") as stream:
+    with grib_path.open("rb") as stream:
         message_number = 0
 
         while True:
