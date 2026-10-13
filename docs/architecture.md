@@ -1,13 +1,13 @@
 # Architecture and scope
 
-Date: 2026-10-06
+Date: 2026-10-10
 Status: accepted direction; temporal coverage and pairing policy pending validation.
 
 ## 1. Research question
 
-Can a reproducible multivariate model reconstruct regional BRAMS simulation fields from ERA5 at matching valid times better than spatial interpolation, while preserving useful spatial structure and cross-variable consistency?
+Can a reproducible multivariate model reconstruct regional BRAMS simulation fields from GFS at matching valid times better than spatial interpolation, while preserving useful spatial structure and cross-variable consistency?
 
-Users are scientific ML reviewers and researchers developing regional weather experiments. A later consumer is a weather forecaster using sequences of generated historical fields. This document does not redefine forecast-forge's existing forecasting-framework scope; a weather forecasting integration requires its own scope decision.
+Users are scientific ML reviewers and researchers developing regional weather experiments. A later consumer is a weather forecaster using sequences of generated historical fields. forecast-forge is the companion temporal weather predictor: it consumes recent regional histories and predicts subsequent fields up to 72 hours ahead.
 
 ## 2. Domain and field contract
 
@@ -23,7 +23,7 @@ Use the actual BRAMS latitude-longitude coordinates as the output grid. The arch
 | Wind v at 10 m | 10v | Instantaneous northward component, m/s |
 | Mean sea-level pressure | prmsl | Instantaneous; verify unit and parameter metadata |
 
-Confirm ERA5 counterparts, units, level definitions and coordinate conventions before pairing. Keep u and v as learned outputs; derive speed as sqrt(u^2 + v^2). Define meteorological wind-direction convention and mask calm-wind direction where appropriate. Temperature minima/maxima over an interval are not substitutes for instantaneous temperature.
+Confirm GFS counterparts, units, level definitions and coordinate conventions before pairing. Keep u and v as learned outputs; derive speed as sqrt(u^2 + v^2). Define meteorological wind-direction convention and mask calm-wind direction where appropriate. Temperature minima/maxima over an interval are not substitutes for instantaneous temperature.
 
 Predictor channels can exceed output channels, but additions require availability and ablation evidence. Static elevation and land/sea information are candidates after the simplest baseline. No atmospheric level or precipitation variable enters by name alone: identify parameter, level, time statistic and accumulation boundaries.
 
@@ -33,13 +33,13 @@ User inspection of `BRAMS_ams_08km_2026010100_2026010106.grib2` confirmed a regu
 
 This is a single sample. It does not establish archive completeness, latency, consistency or optimal forecast lead. Audit multiple cycles and dates before freezing a BRAMS lead policy. Start with a fixed lead candidate such as +6 h, but choose and justify it after checking availability and spin-up behavior. Never silently mix different leads for the same valid time.
 
-Choose the period only after verifying overlapping ERA5/BRAMS coverage. One year may limit seasonal and interannual generalization; document the actual limits rather than promising coverage.
+Choose the period only after verifying overlapping GFS/BRAMS coverage. One year may limit seasonal and interannual generalization; document the actual limits rather than promising coverage.
 
 ## 4. Pipeline and responsibilities
 
 ```mermaid
 flowchart TD
-    E[ERA5 fields] --> A[Time and field alignment]
+    E[GFS fields] --> A[Time and field alignment]
     B[BRAMS fields] --> A
     A --> G[Grid and unit validation]
     G --> S[Temporal split]
@@ -64,9 +64,9 @@ Authoritative code lives under src/cosmic_downscaler. Notebooks support explorat
 
 ## 5. Alignment and reproducibility
 
-Record initialization time, forecast lead, valid time and download time independently. Pair ERA5 with BRAMS using valid time in UTC. Resolve duplicate valid times according to the frozen cycle/lead rule.
+Record initialization time, forecast lead, valid time and download time independently. Pair GFS with BRAMS using valid time in UTC. Resolve duplicate valid times according to the frozen cycle/lead rule.
 
-Normalize longitude convention, sort coordinates consistently, verify scan orientation and check land/sea boundaries. Any interpolation of ERA5 to the target grid must be explicit and identical for baseline and neural comparisons. Do not interpolate BRAMS onto a coarser grid and then claim retained native high-resolution targets.
+Normalize longitude convention, sort coordinates consistently, verify scan orientation and check land/sea boundaries. Any interpolation of GFS to the target grid must be explicit and identical for baseline and neural comparisons. Do not interpolate BRAMS onto a coarser grid and then claim retained native high-resolution targets.
 
 Version source files by hashes, field selection, grid, domain, masks, units and pairing policy. Record source/model changes and missing dates. Build a manifest with one entry per paired timestamp and required variable set. Reject or explicitly flag incomplete pairs; no silent temporal interpolation across missing fields.
 
@@ -103,17 +103,30 @@ Future weather-model training may use sequences of these fields to predict 48-72
 
 For downstream validation/test periods, fit the downscaler without those periods. Use chronological fitting or cross-fitting for downstream development so generated outputs are not misleadingly evaluated on dates seen during downscaler training.
 
-## 9. Operational extension
+## 9. Operational integration
 
-A first experiment is retrospective, using ERA5 histories. A future operational chain can consume available analysis or short-lead forecast fields from BRAMS, GFS or IFS. BRAMS already on the target grid may feed the forecaster directly; coarse operational fields may require an adapted downscaler.
+GFS is the primary source for both historical training and production. ERA5 remains an optional retrospective experiment with a separate source adapter and checkpoint. Do not substitute sources solely because names or grids match.
 
-Reproduce availability at each issuance time: only use cycles published before that time, and distinguish initialization, valid time and publication time. Assess distribution shift and source-specific errors using archived operational inputs. Do not assume an ERA5-trained mapping transfers unchanged.
+Audit GFS/BRAMS historical overlap, model upgrades and operational publication latency. Record each source initialization, lead, valid time and availability independently. Match valid times, retain both models' leads, and condition on GFS lead or train/evaluate separate lead regimes. An analysis and a +72-hour forecast are not interchangeable predictors.
 
-Compare 48-72-hour forecasts with persistence and the operational source's own forecasts at the same valid times and using comparable available information. Baseline access and independent verification must be documented.
+Two exports have different uses:
+
+- Recent downscaled GFS analysis or short-lead states, available at issuance, initialize forecast-forge. Freeze a causal cycle/lead policy and train on the same policy.
+- Future GFS forecasts downscaled to the regional grid provide a competing forecast trajectory. Validate downscaler skill at each supported lead before using this baseline.
+
+For operational backtests, use only inputs published by issuance and never later cycles or revised fields. If an input is a forecast-derived state, label it accordingly. Publication time cannot be inferred from valid time. Report latency, missing cycles and fallback behavior.
+
+Compare Forge forecasts with persistence and native/downscaled GFS forecasts using the same issuance and target times. The Forge initially learns temporal evolution without ingesting future GFS trajectories; a future conditioned variant is a separate experiment.
+
+## 9a. GOES and energy extensions
+
+GOES observations are candidate additional inputs for convection and short-term extreme-weather experiments. They are not equivalent to surface temperature, wind or pressure references; no universal 0.5 km target grid is adopted. Source geometry, bands, day/night availability, latency and target definitions require a separate contract.
+
+A future application project can consume outputs for wind energy and outage risk. Wind at turbine height, gusts, lightning targets, power curves, generation records and grid/interruption data require separate acquisition and validation. The five-field MVP does not claim these capabilities.
 
 ## 10. Completion criteria and open decisions
 
-Documentation is complete when scope, contracts and pending choices are explicit. Data foundations require source terms, ERA5 access, verified regional coverage, overlap period, field matches, BRAMS lead/cycle policy and temporal partitions.
+Documentation is complete when scope, contracts and pending choices are explicit. Data foundations require source terms, GFS access, verified regional coverage, overlap period, field matches, BRAMS lead/cycle policy and temporal partitions.
 
 The first baseline release requires reproducible paired data, meaningful tests of alignment and patch reconstruction, interpolation reports in physical units and geographic comparisons. The deterministic release adds reproducible training, held-out improvement analysis and limitations. Generative and operational extensions require separate evidence and are not prerequisites for a useful first release.
 
@@ -121,6 +134,6 @@ The first baseline release requires reproducible paired data, meaningful tests o
 
 - [CPTEC/INPE BRAMS archive](https://dataserver.cptec.inpe.br/dataserver_modelos/brams/ams_08km/brutos/2026/)
 - [Inspected sample descriptor](https://dataserver.cptec.inpe.br/dataserver_modelos/brams/ams_08km/brutos/2026/01/01/00/BRAMS_ams_08km_2026010100_2026010106.ctl)
-- [ECMWF open operational data](https://www.ecmwf.int/en/forecasts/datasets/open-data)
+- [NOAA GFS data access](https://www.ncei.noaa.gov/products/weather-climate-models/global-forecast)
 
 Record exact dataset documentation and selected release/version during ingestion. These links do not substitute for verification of download rights or variable contracts.
