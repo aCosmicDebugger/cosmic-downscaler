@@ -1,6 +1,7 @@
 import argparse
 import json
 import math
+from datetime import datetime
 from pathlib import Path
 from statistics import mean
 
@@ -13,6 +14,24 @@ POLICY_KEYS = [
     "domain",
     "reference_kind",
 ]
+
+
+def aggregate_reports(reports):
+    summary = {}
+
+    for name in FIELDS:
+        metrics = [report["metrics"][name] for report in reports]
+        summary[name] = {
+            "mae": mean(metric["mae"] for metric in metrics),
+            "rmse": math.sqrt(
+                mean(metric["rmse"] ** 2 for metric in metrics)
+            ),
+            "bias": mean(metric["bias"] for metric in metrics),
+            "units": metrics[0]["units"],
+            "n_cells_per_time": metrics[0]["n_cells"],
+        }
+
+    return summary
 
 
 def main():
@@ -83,20 +102,21 @@ def main():
         reports.append(report)
 
     reports.sort(key=lambda report: report["valid_time_utc"])
-    summary = {}
+    summary = aggregate_reports(reports)
 
-    for name in FIELDS:
-        metrics = [report["metrics"][name] for report in reports]
-        summary[name] = {
-            "mae": mean(metric["mae"] for metric in metrics),
-            "rmse": math.sqrt(
-                mean(metric["rmse"] ** 2 for metric in metrics)
-            ),
-            "bias": mean(metric["bias"] for metric in metrics),
-            "units": metrics[0]["units"],
-            "n_cells_per_time": metrics[0]["n_cells"],
+    groups = {}
+    for report in reports:
+        valid_time = datetime.fromisoformat(report["valid_time_utc"])
+        hour = valid_time.strftime("%H:%M")
+        groups.setdefault(hour, []).append(report)
+
+    by_hour = {
+        hour: {
+            "n_times": len(group),
+            "metrics": aggregate_reports(group),
         }
-
+        for hour, group in sorted(groups.items())
+    }
     print("Per-time metrics: MAE / RMSE / bias")
     for report in reports:
         print(f"\n{report['valid_time_utc']} UTC")
@@ -115,9 +135,18 @@ def main():
             f"RMSE={metric['rmse']:.3f}, bias={metric['bias']:.3f}, "
             f"units={metric['units']}"
         )
+    
+    for hour, group in by_hour.items():
+        print(f"\nValid time {hour} UTC: {group['n_times']} samples")
+        for name, metric in group["metrics"].items():
+            print(
+                f"{name}: MAE={metric['mae']:.3f}, "
+                f"RMSE={metric['rmse']:.3f}, bias={metric['bias']:.3f}, "
+                f"units={metric['units']}"
+            )
 
     output = {
-        "schema_version": 1,
+        "schema_version": 2,
         "aggregation": "equal weight per valid time",
         "spatial_policy": {
             key: reports[0][key] for key in POLICY_KEYS
@@ -129,6 +158,7 @@ def main():
         "input_files": [str(path) for path in files],
         "aggregate_metrics": summary,
         "per_time": reports,
+        "metrics_by_valid_hour_utc": by_hour,
     }
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
